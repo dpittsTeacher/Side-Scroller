@@ -1,0 +1,116 @@
+<canvas id='ss' width='800' height='400'></canvas>
+<script>
+window.onload = function() {
+  canv = document.getElementById('ss');
+  ctx = canv.getContext('2d');
+  setInterval(main,1000/10);
+  document.addEventListener('keydown',keyDown);
+  document.addEventListener('keyup',keyUp);
+}
+
+function Platform(x,y,w,h,hue) {
+  this.x = x;
+  this.cx = this.x/2;
+  this.y = y;
+  this.cy = this.y/2;
+  this.w = w;
+  this.h = h;
+  this.hue = hue;
+  this.draw = function draw() {
+    ctx.fillStyle = this.hue;
+    ctx.fillRect(this.x,this.y,this.w,this.h);
+    this.x += -5;
+    if (this.x<-60) {
+      this.x = canv.width*2;
+    }
+  }
+}
+
+function Player(x,y,w,h,hue) {
+  this.x = x;
+  this.dx = 1.2;
+  this.y = y;
+  this.dy = 0;
+  this.w = w;
+  this.h = h;
+  this.hue = hue;
+  this.draw = function draw() {
+    ctx.fillStyle = this.hue;
+    ctx.fillRect(this.x,this.y,this.w,this.h);
+  }
+  this.play = function jump() {
+    this.y +=this.dy;
+    this.dy += 1.5; // gravity
+    this.dy *= 0.8;
+    if (this.y >= canv.height-this.h-20) {
+      this.y = canv.height-this.h-20;
+    }
+    if (this.x<400) {
+      this.x += 2
+      }
+    }
+  }
+
+
+player = new Player(10,280,50,100,'black');
+
+plat = [];
+for(i=0;i<45;i++) {
+  cloud_x = Math.random()*1600;
+  cloud_y = Math.random()*100+15;
+  cloud = new Platform(cloud_x,cloud_y,60,20,'white');
+  plat.push(cloud);
+}
+
+
+function main() {
+  ctx.fillStyle = 'blue';
+  ctx.fillRect(-10,-10,800,420)
+  ctx.fillStyle = 'orange';
+  ctx.fillRect(25,5,80,80);
+  ctx.fillStyle = 'green';
+  ctx.fillRect(-10,380,800,20);
+  for(i=0;i<plat.length;i++) {
+    plat[i].draw();
+  }
+  player.draw()
+  player.play()
+}
+function keyDown(evt) {
+  switch(evt.keyCode) {
+    case 37:
+        for(i=0;i<plat.length;i++) {
+          plat[i].x += 2;
+        }
+      break;
+    case 38:
+      if (player.y == canv.height-20-player.h) {
+        player.dy = -20;
+      }
+      break;
+    case 39:
+      for(i=0;i<plat.length;i++) {
+          plat[i].x += -2;
+        }
+      if (player.x<400) {
+        player.x += 2;
+      }
+      break;
+    case 40:
+      break;
+  }
+}
+function keyUp(evt) {
+  switch(evt.keyCode) {
+    case 37:
+      break;
+    case 38:
+      break;
+    case 39:
+      break;
+    case 40:
+      break;
+  }
+}
+
+</script>
